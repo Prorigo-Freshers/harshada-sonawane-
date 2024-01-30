@@ -1,0 +1,243 @@
+// Define the tab name
+const tabName = "Composition";
+
+// Indicate if the tab should be visible or not (default is true)
+let isTabVisible = true;
+
+// Get the classification property from the parent item
+const classification = aras.getItemProperty(parent.item, "classification");
+
+// If classification is neither material nor software, hide the tab
+if(classification !== "Material" && classification !== "software"){
+    isTabVisible = false;
+}
+
+// Function to hide tabs
+const hideTabs = function () {
+    // If tabs are not yet loaded, wait for 200ms before executing again
+    if (!areTabsLoaded()) {
+        setTimeout(hideTabs, 200);
+        return;
+    }
+
+    // If tabs are loaded, set visibility of the tab based on isTabVisible flag
+    const tabBar = parent.relationships.relTabbar;
+    const tabID = tabBar.GetTabId(tabName);
+    tabBar.SetTabVisible(tabID, isTabVisible);
+};
+
+// Function to check if tabs have loaded
+const areTabsLoaded = function () {
+    // If parent relationships are undefined, tabs are not yet loaded
+    if (parent.relationships === undefined)
+        return false;
+
+    // Check if the relationships tab bar is ready
+    const areTabsLoaded = Boolean(!parent.relationships || !parent.relationships.relTabbarReady || parent.relationships.relTabbar.GetTabOrder("|") !== "");
+    return areTabsLoaded;
+};
+
+// Wait for 200ms before executing the hideTabs function
+setTimeout(hideTabs, 200);
+
+
+
+
+
+159C6D88795B4A86864420863466F728   part BOM
+
+
+567E4149FBF74DACA0B0C4C9B1E79A3B part multi
+
+
+
+
+
+
+1)Working on Poly Items ,learn about poly Item ,Create a Poly Item ItemType ,Establish a Relationship to a Poly Item ,Use a Poly Item as Item Data Type Property.
+
+
+
+
+
+
+function tryRun() {
+    if (!parent.relationships) {
+        setTimeout(tryRun, 100);
+        return;
+    }
+
+    if (parent.relationships.document.readyState != "complete" || !parent.relationships.currTabID) {
+        setTimeout(tryRun, 100);
+    }
+    else {
+        var tabbar = parent.relationships.relTabbar;
+        if (document.thisItem.getProperty("classification", "") == "Equipment") {
+            //
+            //for attachement
+            tabbar.SetTabVisible('810DEFB14CD44050B599296ADCD99124', 1);
+            //for maintainence plan
+            // var tabbar2 = parent.relationships.relTabbar;
+            tabbar.SetTabVisible('1B836691ECF84263B885EE4CA8427525', 1);
+            //for MSA
+            tabbar.SetTabVisible('94961F7052D440EB95F0769CD098486A', true);
+
+            parent.relationships.relTabbar.removeTabByLabel("AML");
+            parent.relationships.relTabbar.removeTabByLabel("CAD File");
+            parent.relationships.relTabbar.removeTabByLabel("Documents");
+            parent.relationships.relTabbar.removeTabByLabel("BOM/Item");
+            parent.relationships.relTabbar.removeTabByLabel("MSA");
+
+        }
+        else if (document.thisItem.getProperty("classification", "") == "Tool") {
+            parent.relationships.relTabbar.removeTabByLabel("AML");
+            parent.relationships.relTabbar.removeTabByLabel("Attachments");
+            parent.relationships.relTabbar.removeTabByLabel("Documents");
+            parent.relationships.relTabbar.removeTabByLabel("Maintainence Plans");
+            parent.relationships.relTabbar.removeTabByLabel("Tool");
+        }
+        else {
+            //tabbar = parent.relationships.relTabbar;
+            tabID = tabbar.GetTabId("Maintainence Plans");
+            tabID1 = tabbar.GetTabId("Attachments");
+            tabID2 = tabbar.GetTabId("MSA");
+            if (tabID) {
+                tabbar.SetTabVisible(tabID, false);
+            }
+            if (tabID1) {
+                tabbar.SetTabVisible(tabID1, false);
+            }
+            if (tabID2) {
+                tabbar.SetTabVisible(tabID2, false);
+            }
+
+            // parent.relationships.relTabbar.removeTabByLabel("Maintainence Plans");
+        }
+    }
+
+}
+setTimeout(tryRun, 100);
+
+
+
+
+
+
+
+
+
+
+Explaniation of code
+
+This code is written in JavaScript. It is a function named tryRun which is used to hide and show tabs based on the classification of the item.
+
+The code checks if the parent.relationships object exists. If it doesn’t, the function waits for 100 milliseconds and tries again. If it does exist, the code checks if the document.readyState is “complete” and currTabID is not null. If it is not, the function waits for 100 milliseconds and tries again. If it is, the code gets the tabbar object from parent.relationships.relTabbar.
+
+If the classification of the item is “Assembly”, the code shows the tabs for attachment, maintenance plan, and MSA. It also removes the tabs for AML, BOM, CAD Documents, Changes, and Goals.
+
+If the classification of the item is “Tool”, the code removes the tabs for AML, BOM, and Alternates.
+
+If the classification of the item is anything else, the code hides the tabs for AML, BOM, and Goals.
+
+I hope this helps!
+
+
+
+
+function tryRun() {
+    if (!parent.relationships) {
+        setTimeout(tryRun, 100);
+        return;
+    }
+    debugger;
+    if (parent.relationships.document.readyState != "complete" || !parent.relationships.currTabID) {
+        setTimeout(tryRun, 100);
+    }
+    else {
+        //debugger;
+        var tabbar = parent.relationships.relTabbar;
+        const classification = document.thisItem.getProperty("classification", "");
+        if (classification == "Assembly") {
+            //
+            //for attachement
+            tabbar.SetTabVisible('4F1AC04A2B484F3ABA4E20DB63808A88', 1);
+            //for maintainence plan
+            // var tabbar2 = parent.relationships.relTabbar;
+             tabbar.SetTabVisible('159C6D88795B4A86864420863466F728', 1);
+            //for MSA
+            tabbar.SetTabVisible('C65FB7DC8C3A4EFC97A6EE8196C0B448', true);
+
+            parent.relationships.relTabbar.removeTabByLabel("AML");
+            parent.relationships.relTabbar.removeTabByLabel("BOM");
+            parent.relationships.relTabbar.removeTabByLabel("CAD Documents");
+            parent.relationships.relTabbar.removeTabByLabel("Changes");
+            parent.relationships.relTabbar.removeTabByLabel("Goals");
+
+        }
+        else if (document.thisItem.getProperty("classification", "") == "Material") {
+            parent.relationships.relTabbar.removeTabByLabel("AML");
+           
+            parent.relationships.relTabbar.removeTabByLabel("BOM");
+            
+            parent.relationships.relTabbar.removeTabByLabel("Alternates");
+        }
+        else {
+            //tabbar = parent.relationships.relTabbar;
+            tabID = tabbar.GetTabId("AML");
+            tabID1 = tabbar.GetTabId("BOM");
+            tabID2 = tabbar.GetTabId("Goals");
+            if (tabID) {
+                tabbar.SetTabVisible(tabID, false);
+            }
+            if (tabID1) {
+                tabbar.SetTabVisible(tabID1, false);
+            }
+            if (tabID2) {
+                tabbar.SetTabVisible(tabID2, false);
+            }
+
+            // parent.relationships.relTabbar.removeTabByLabel("Maintainence Plans");
+        }
+    }
+
+}
+setTimeout(tryRun, 100);
+
+
+
+
+************************************************************************************************************
+
+
+ var openWindows = aras.windowsByName;
+for (var winName in openWindows)
+{
+var win = openWindows[winName];
+var winItem = win.thisItem;
+if (winItem && winItem.node.id === "MY_ITEM_ID")
+{
+return alert("window is open");
+}
+}
+return alert("window is not open");
+
+onformpop
+
+
+
+
+
+
+
+34E776916F974707A61CE60F6F5A3F4F9
+94052DB2251743099B1A18570B095FD0
+
+
+C5A862CFB3F84870A6963A61F9BADDC5
+
+
+
+FA3D3AD52509434AB24C3F10380EC9B9
+
+385459915050487C9C7EC40D0D28999C
+
